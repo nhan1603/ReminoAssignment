@@ -53,7 +53,7 @@ services:
     depends_on:
       - database
     environment:
-      PG_URL: postgres://postgres:postgres@database:5432//remino-pg?sslmode=disable
+      PG_URL: postgres://postgres:postgres@database:5432/remino-pg?sslmode=disable
       SERVER_ADDR: ":3001"
       SGT_LOC: "Asia/Singapore"
 

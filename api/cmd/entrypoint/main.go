@@ -14,12 +14,12 @@ import (
 )
 
 func main() {
-	log.Println("Security Command Center API")
+	log.Println("Remitano Assignment API")
 
 	ctx := context.Background()
 
 	// Initial DB connection
-	conn, err := pg.Connect(os.Getenv("DB_URL"))
+	conn, err := pg.Connect(os.Getenv("PG_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}

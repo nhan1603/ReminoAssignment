@@ -17,7 +17,7 @@ var appDB *sql.DB
 func WithTxDB(t *testing.T, callback func(*sql.Tx)) {
 	if appDB == nil {
 		var err error
-		appDB, err = pg.Connect(os.Getenv("DB_URL"))
+		appDB, err = pg.Connect(os.Getenv("PG_URL"))
 
 		require.NoError(t, err)
 	}
