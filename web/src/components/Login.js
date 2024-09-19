@@ -14,6 +14,7 @@ function Login({ onLogin }) {
       const endpoint = isLogin ? '/api/public/v1/login' : '/api/public/v1/user';
       const response = await axios.post(endpoint, { email, password });
       if (isLogin) {
+        localStorage.setItem('authToken', response.data.token);
         onLogin(response.data.user);
       } else {
         setIsLogin(true);

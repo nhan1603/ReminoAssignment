@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
 import VideoList from './components/VideoList';
 import VideoShare from './components/VideoShare';
+import axios from './axiosConfig';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -22,9 +23,13 @@ function App() {
     setUser({ username });
   };
 
-  const handleShareVideo = (videoUrl) => {
-    // TODO: Implement video sharing logic
-    console.log('Sharing video:', videoUrl);
+  const handleShareVideo = async ({ videoUrl, targetEmail }) => {
+    try {
+      const response = await axios.post('/api/public/v1/share-video', { videoUrl, targetEmail });
+      console.log('Video shared successfully:', response.data);
+    } catch (error) {
+      console.error('Error sharing video:', error);
+    }
   };
 
   if (!user) {

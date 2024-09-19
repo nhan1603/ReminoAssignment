@@ -6,14 +6,17 @@ import (
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
-	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/httpserver"
+	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/iam"
 	"github.com/nhan1603/ReminoAssignment/api/internal/controller/auth"
+	"github.com/nhan1603/ReminoAssignment/api/internal/controller/videos"
+	videoHandler "github.com/nhan1603/ReminoAssignment/api/internal/handler/rest/authenticated/v1/video"
 	authHandler "github.com/nhan1603/ReminoAssignment/api/internal/handler/rest/public/v1/auth"
 )
 
 type router struct {
-	ctx      context.Context
-	authCtrl auth.Controller
+	ctx       context.Context
+	authCtrl  auth.Controller
+	videoCtrl videos.Controller
 }
 
 func (rtr router) routes(r chi.Router) {
@@ -25,9 +28,11 @@ func (rtr router) authenticated(r chi.Router) {
 	prefix := "/api/authenticated"
 
 	r.Group(func(r chi.Router) {
-		r.Use(httpserver.AuthenticateUserMiddleware())
+		r.Use(iam.AuthenticateUserMiddleware(rtr.ctx))
 		prefix = prefix + "/v1"
 
+		videoH := videoHandler.New(rtr.videoCtrl)
+		r.Post(prefix+"/share-video", videoH.ShareVideo())
 	})
 }
 

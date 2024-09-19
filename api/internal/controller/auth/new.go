@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 
+	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/iam"
 	"github.com/nhan1603/ReminoAssignment/api/internal/model"
 	"github.com/nhan1603/ReminoAssignment/api/internal/repository"
 )
@@ -14,12 +15,14 @@ type Controller interface {
 }
 
 // New initializes a new Controller instance and returns it
-func New(repo repository.Registry) Controller {
+func New(repo repository.Registry, config iam.Config) Controller {
 	return impl{
-		repo: repo,
+		repo:   repo,
+		config: config,
 	}
 }
 
 type impl struct {
-	repo repository.Registry
+	repo   repository.Registry
+	config iam.Config
 }

@@ -8,7 +8,9 @@ import (
 
 	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/db/pg"
 	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/httpserver"
+	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/iam"
 	"github.com/nhan1603/ReminoAssignment/api/internal/controller/auth"
+	"github.com/nhan1603/ReminoAssignment/api/internal/controller/videos"
 	"github.com/nhan1603/ReminoAssignment/api/internal/repository"
 	"github.com/nhan1603/ReminoAssignment/api/internal/repository/generator"
 )
@@ -17,6 +19,9 @@ func main() {
 	log.Println("Remitano Assignment API")
 
 	ctx := context.Background()
+
+	iamConfig := iam.NewConfig()
+	ctx = iam.SetConfigToContext(ctx, iamConfig)
 
 	// Initial DB connection
 	conn, err := pg.Connect(os.Getenv("PG_URL"))
@@ -47,7 +52,8 @@ func initRouter(
 	repo := repository.New(db)
 
 	return router{
-		ctx:      ctx,
-		authCtrl: auth.New(repo),
+		ctx:       ctx,
+		authCtrl:  auth.New(repo, iam.ConfigFromContext(ctx)),
+		videoCtrl: videos.New(repo),
 	}, nil
 }

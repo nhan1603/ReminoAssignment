@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/iam"
 	"github.com/nhan1603/ReminoAssignment/api/internal/model"
-	jwtUtil "github.com/nhan1603/ReminoAssignment/api/internal/pkg/jwt"
 	"github.com/nhan1603/ReminoAssignment/api/internal/repository/user"
 	pkgerrors "github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -32,7 +32,7 @@ func (i impl) CheckAuth(ctx context.Context, inp LoginInput) (model.User, string
 	}
 	log.Println("[CheckAuth] login successfully")
 
-	token, err := generateJWTToken(u)
+	token, err := generateJWTToken(i, u)
 	if err != nil {
 		return model.User{}, "", err
 	}
@@ -59,14 +59,16 @@ func checkAuth(ctx context.Context, i impl, inp LoginInput) (model.User, error) 
 	return u, nil
 }
 
-func generateJWTToken(u model.User) (string, error) {
+func generateJWTToken(i impl, u model.User) (string, error) {
 	log.Println("[CheckAuth] generating token...")
 
-	token, err := jwtUtil.GenerateToken(jwtUtil.JWTClaim{
-		ID:    u.ID,
-		Email: u.Email,
+	token, err := i.config.GenerateToken(iam.JWTClaim{
+		HostProfile: iam.HostProfile{
+			ID:    u.ID,
+			Email: u.Email,
+		},
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
+			ExpiresAt: time.Now().Add(60 * time.Minute).Unix(),
 		},
 	})
 	if err != nil {

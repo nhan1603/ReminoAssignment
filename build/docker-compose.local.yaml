@@ -56,6 +56,7 @@ services:
       PG_URL: postgres://postgres:postgres@database:5432/remino-pg?sslmode=disable
       SERVER_ADDR: ":3001"
       SGT_LOC: "Asia/Singapore"
+      JWT_KEY: "CCO3rTNkzj5ll9JogQW5"
 
 
   mockery:
