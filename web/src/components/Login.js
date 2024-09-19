@@ -1,13 +1,20 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: Implement actual login logic
-    onLogin(username);
+    setError('');
+    try {
+      const response = await axios.post('/api/public/v1/login', { username, password });
+      onLogin(response.data.user);
+    } catch (err) {
+      setError('Invalid credentials');
+    }
   };
 
   return (
@@ -26,6 +33,7 @@ function Login({ onLogin }) {
         placeholder="Password"
         required
       />
+      {error && <p className="error">{error}</p>}
       <button type="submit">Login</button>
     </form>
   );

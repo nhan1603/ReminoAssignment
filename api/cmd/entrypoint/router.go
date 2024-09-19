@@ -47,7 +47,7 @@ func (rtr router) public(r chi.Router) {
 
 		r.Group(func(r chi.Router) {
 			authH := authHandler.New(rtr.authCtrl)
-			r.Post(prefix+"/auth/ou", authH.AuthenticateOperationUser())
+			r.Post(prefix+"/login", authH.AuthenticateOperationUser())
 		})
 	})
 }
