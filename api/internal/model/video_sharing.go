@@ -5,3 +5,11 @@ type VideoShare struct {
 	UserID     int
 	VideoTitle string
 }
+
+type ListSharedVideo []SharedVideo
+
+type SharedVideo struct {
+	VideoUrl    string
+	VideoTitle  string
+	SharerEmail string
+}

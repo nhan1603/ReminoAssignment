@@ -1,46 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import Login from './components/Login';
-import VideoList from './components/VideoList';
 import VideoShare from './components/VideoShare';
-import axios from './axiosConfig';
+import SharedVideoList from './components/SharedVideoList';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [videos, setVideos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // TODO: Fetch videos from API when user is logged in
-    if (user) {
-      // Simulated API call
-      setVideos([
-        { id: 1, title: 'Sample Video 1', youtube_video_id: 'dQw4w9WgXcQ' },
-        { id: 2, title: 'Sample Video 2', youtube_video_id: 'dQw4w9WgXcQ' },
-      ]);
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setUser({ token });
     }
-  }, [user]);
+    setIsLoading(false);
+  }, []);
 
-  const handleLogin = (username) => {
-    setUser({ username });
+  const handleLogin = (userData) => {
+    localStorage.setItem('authToken', userData.token);
+    setUser(userData);
   };
 
-  const handleShareVideo = async ({ videoUrl, targetEmail }) => {
-    try {
-      const response = await axios.post('/api/public/v1/share-video', { videoUrl, targetEmail });
-      console.log('Video shared successfully:', response.data);
-    } catch (error) {
-      console.error('Error sharing video:', error);
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setUser(null);
   };
 
-  if (!user) {
-    return <Login onLogin={handleLogin} />;
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   return (
-    <div>
-      <h1>Welcome, {user.username}!</h1>
-      <VideoShare onShareVideo={handleShareVideo} />
-      <VideoList videos={videos} />
+    <div className="App">
+      <h1>Video Sharing App</h1>
+      {user ? (
+        <>
+          <button onClick={handleLogout}>Logout</button>
+          <VideoShare user={user} />
+        </>
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
+      <SharedVideoList />
     </div>
   );
 }

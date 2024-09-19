@@ -11,6 +11,7 @@ import (
 	"github.com/nhan1603/ReminoAssignment/api/internal/controller/videos"
 	videoHandler "github.com/nhan1603/ReminoAssignment/api/internal/handler/rest/authenticated/v1/video"
 	authHandler "github.com/nhan1603/ReminoAssignment/api/internal/handler/rest/public/v1/auth"
+	publicVideoHandler "github.com/nhan1603/ReminoAssignment/api/internal/handler/rest/public/v1/video"
 )
 
 type router struct {
@@ -54,6 +55,9 @@ func (rtr router) public(r chi.Router) {
 			authH := authHandler.New(rtr.authCtrl)
 			r.Post(prefix+"/login", authH.AuthenticateOperationUser())
 			r.Post(prefix+"/user", authH.CreateUser())
+
+			videoH := publicVideoHandler.New(rtr.videoCtrl)
+			r.Get(prefix+"/videos", videoH.ListVideo())
 		})
 	})
 }

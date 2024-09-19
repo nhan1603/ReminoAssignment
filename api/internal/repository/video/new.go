@@ -10,6 +10,7 @@ import (
 // Repository provides the specification of the functionality provided by this pkg
 type Repository interface {
 	ShareVideo(ctx context.Context, sharingInput model.VideoShare) error
+	RetrieveSharedVideo(ctx context.Context) (model.ListSharedVideo, error)
 }
 
 // New returns an implementation instance satisfying Repository

@@ -11,42 +11,47 @@ function Login({ onLogin }) {
     e.preventDefault();
     setError('');
     try {
-      const endpoint = isLogin ? '/api/public/v1/login' : '/api/public/v1/user';
+      const endpoint = isLogin ? '/api/public/v1/login' : '/api/public/v1/users';
       const response = await axios.post(endpoint, { email, password });
+      
       if (isLogin) {
-        localStorage.setItem('authToken', response.data.token);
-        onLogin(response.data.user);
+        const { token, user } = response.data;
+        onLogin({ token, ...user });
       } else {
         setIsLogin(true);
         setError('Account created successfully. Please log in.');
       }
     } catch (err) {
+      console.error(isLogin ? 'Login error:' : 'Signup error:', err);
       setError(isLogin ? 'Invalid credentials' : 'Failed to create account');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-        required
-      />
-      {error && <p className="error">{error}</p>}
-      <button type="submit">{isLogin ? 'Login' : 'Create Account'}</button>
-      <button type="button" onClick={() => setIsLogin(!isLogin)}>
-        {isLogin ? 'Need an account?' : 'Already have an account?'}
+    <div>
+      <h2>{isLogin ? 'Login' : 'Create Account'}</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Email"
+          required
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Password"
+          required
+        />
+        {error && <p className="error">{error}</p>}
+        <button type="submit">{isLogin ? 'Login' : 'Create Account'}</button>
+      </form>
+      <button onClick={() => setIsLogin(!isLogin)}>
+        {isLogin ? 'Need to create an account?' : 'Already have an account?'}
       </button>
-    </form>
+    </div>
   );
 }
 

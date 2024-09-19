@@ -4,20 +4,26 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/httpserver"
 	"github.com/nhan1603/ReminoAssignment/api/internal/model"
 )
 
-func (h Handler) CreateUser() http.HandlerFunc {
-	type request struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+// CreateUserResponse represents result of creating user
+type CreateUserResponse struct {
+	Message string `json:"message"`
+}
 
-	return func(w http.ResponseWriter, r *http.Request) {
-		var req request
+type CreateUserRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+func (h Handler) CreateUser() http.HandlerFunc {
+	return httpserver.HandlerErr(func(w http.ResponseWriter, r *http.Request) error {
+		var req CreateUserRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, "Invalid request body", http.StatusBadRequest)
-			return
+			return err
 		}
 
 		user := model.User{
@@ -28,10 +34,13 @@ func (h Handler) CreateUser() http.HandlerFunc {
 		err := h.authCtrl.CreateUser(r.Context(), &user)
 		if err != nil {
 			http.Error(w, "Failed to create user", http.StatusInternalServerError)
-			return
+			return err
 		}
 
-		w.WriteHeader(http.StatusCreated)
-		json.NewEncoder(w).Encode(map[string]string{"message": "User created successfully"})
-	}
+		httpserver.RespondJSON(w, CreateUserResponse{
+			Message: "User created successfully",
+		})
+
+		return nil
+	})
 }
