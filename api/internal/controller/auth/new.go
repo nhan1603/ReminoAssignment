@@ -9,8 +9,8 @@ import (
 
 // Controller represents the specification of this pkg
 type Controller interface {
-	// CheckAuth handles authentication checking
 	CheckAuth(ctx context.Context, inp LoginInput) (model.User, string, error)
+	CreateUser(ctx context.Context, user *model.User) error
 }
 
 // New initializes a new Controller instance and returns it

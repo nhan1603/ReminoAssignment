@@ -10,6 +10,7 @@ import (
 // Repository provides the specification of the functionality provided by this pkg
 type Repository interface {
 	GetByEmail(context.Context, GetUserInput) (model.User, error)
+	Create(ctx context.Context, user *model.User) error
 }
 
 // New returns an implementation instance satisfying Repository

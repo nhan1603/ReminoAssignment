@@ -36,10 +36,6 @@ pg-create:
 	docker-compose -f ${DOCKER_COMPOSE_FILE} -p=${PROJECT_NAME} up -d ${DATABASE_CONTAINER}
 	@echo Database container started!
 
-## new-migration-file: creates a DB migration files. Ex: make new-migration-file name=init
-new-migration-file:
-	docker-compose -f ${DOCKER_COMPOSE_FILE} -p=${PROJECT_NAME} --profile tools run --rm migrate create -ext sql -dir /migrations $(name)
-
 ## pg-migrate: executes latest migration files
 pg-migrate:
 	@echo Running migration
@@ -63,7 +59,7 @@ test:
 ## pg-drop: reset db to blank
 pg-drop:
 	@echo Dropping database...
-	docker-compose -f ${DOCKER_COMPOSE_FILE} -p=${PROJECT_NAME} --profile tools run --rm migrate drop
+	docker-compose -f ${DOCKER_COMPOSE_FILE} -p=${PROJECT_NAME} --profile tools run --rm migrate down
 	@echo Done!
 
 down:

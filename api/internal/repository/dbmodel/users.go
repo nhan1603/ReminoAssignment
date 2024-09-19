@@ -25,7 +25,6 @@ import (
 // User is an object representing the database table.
 type User struct {
 	ID           int       `boil:"id" json:"id" toml:"id" yaml:"id"`
-	Username     string    `boil:"username" json:"username" toml:"username" yaml:"username"`
 	Email        string    `boil:"email" json:"email" toml:"email" yaml:"email"`
 	PasswordHash string    `boil:"password_hash" json:"password_hash" toml:"password_hash" yaml:"password_hash"`
 	CreatedAt    null.Time `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
@@ -36,13 +35,11 @@ type User struct {
 
 var UserColumns = struct {
 	ID           string
-	Username     string
 	Email        string
 	PasswordHash string
 	CreatedAt    string
 }{
 	ID:           "id",
-	Username:     "username",
 	Email:        "email",
 	PasswordHash: "password_hash",
 	CreatedAt:    "created_at",
@@ -50,13 +47,11 @@ var UserColumns = struct {
 
 var UserTableColumns = struct {
 	ID           string
-	Username     string
 	Email        string
 	PasswordHash string
 	CreatedAt    string
 }{
 	ID:           "users.id",
-	Username:     "users.username",
 	Email:        "users.email",
 	PasswordHash: "users.password_hash",
 	CreatedAt:    "users.created_at",
@@ -66,13 +61,11 @@ var UserTableColumns = struct {
 
 var UserWhere = struct {
 	ID           whereHelperint
-	Username     whereHelperstring
 	Email        whereHelperstring
 	PasswordHash whereHelperstring
 	CreatedAt    whereHelpernull_Time
 }{
 	ID:           whereHelperint{field: "\"users\".\"id\""},
-	Username:     whereHelperstring{field: "\"users\".\"username\""},
 	Email:        whereHelperstring{field: "\"users\".\"email\""},
 	PasswordHash: whereHelperstring{field: "\"users\".\"password_hash\""},
 	CreatedAt:    whereHelpernull_Time{field: "\"users\".\"created_at\""},
@@ -106,8 +99,8 @@ func (r *userR) GetSharedVideos() SharedVideoSlice {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "username", "email", "password_hash", "created_at"}
-	userColumnsWithoutDefault = []string{"username", "email", "password_hash"}
+	userAllColumns            = []string{"id", "email", "password_hash", "created_at"}
+	userColumnsWithoutDefault = []string{"email", "password_hash"}
 	userColumnsWithDefault    = []string{"id", "created_at"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}

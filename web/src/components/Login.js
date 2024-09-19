@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import axios from '../axiosConfig';
 
 function Login({ onLogin }) {
-  const [username, setUsername] = useState('');
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
@@ -10,10 +11,16 @@ function Login({ onLogin }) {
     e.preventDefault();
     setError('');
     try {
-      const response = await axios.post('/api/public/v1/login', { username, password });
-      onLogin(response.data.user);
+      const endpoint = isLogin ? '/api/public/v1/login' : '/api/public/v1/user';
+      const response = await axios.post(endpoint, { email, password });
+      if (isLogin) {
+        onLogin(response.data.user);
+      } else {
+        setIsLogin(true);
+        setError('Account created successfully. Please log in.');
+      }
     } catch (err) {
-      setError('Invalid credentials');
+      setError(isLogin ? 'Invalid credentials' : 'Failed to create account');
     }
   };
 
@@ -21,9 +28,9 @@ function Login({ onLogin }) {
     <form onSubmit={handleSubmit}>
       <input
         type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="email"
         required
       />
       <input
@@ -34,7 +41,10 @@ function Login({ onLogin }) {
         required
       />
       {error && <p className="error">{error}</p>}
-      <button type="submit">Login</button>
+      <button type="submit">{isLogin ? 'Login' : 'Create Account'}</button>
+      <button type="button" onClick={() => setIsLogin(!isLogin)}>
+        {isLogin ? 'Need an account?' : 'Already have an account?'}
+      </button>
     </form>
   );
 }
