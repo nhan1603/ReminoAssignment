@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from '../axiosConfig';
 import './SharedVideoList.css';
 
-function SharedVideoList() {
+function SharedVideoList({ refreshTrigger }) {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,7 +21,7 @@ function SharedVideoList() {
     };
 
     fetchVideos();
-  }, []);
+  }, [refreshTrigger]);
 
   const getYouTubeVideoId = (url) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;

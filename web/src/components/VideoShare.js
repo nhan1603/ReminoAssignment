@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from '../axiosConfig';
 
-function VideoShare({ user }) {
+function VideoShare({ user , onVideoShared }) {
   const [videoUrl, setVideoUrl] = useState('');
   const [videoTitle, setVideoTitle] = useState('');
 
@@ -21,6 +21,7 @@ function VideoShare({ user }) {
       setVideoUrl('');
       setVideoTitle('');
       alert('Video shared successfully!');
+      onVideoShared(); // Call this function to trigger a refresh of the shared videos list
     } catch (error) {
       console.error('Error sharing video:', error);
       alert('Failed to share video. Please try again.');

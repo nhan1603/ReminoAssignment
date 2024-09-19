@@ -5,14 +5,13 @@ import SharedVideoList from './components/SharedVideoList';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (token) {
       setUser({ token });
     }
-    setIsLoading(false);
   }, []);
 
   const handleLogin = (userData) => {
@@ -25,9 +24,9 @@ function App() {
     setUser(null);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  const refreshSharedVideos = () => {
+    setRefreshTrigger(prev => prev + 1);
+  };
 
   return (
     <div className="App">
@@ -35,12 +34,12 @@ function App() {
       {user ? (
         <>
           <button onClick={handleLogout}>Logout</button>
-          <VideoShare user={user} />
+          <VideoShare user={user} onVideoShared={refreshSharedVideos} />
         </>
       ) : (
         <Login onLogin={handleLogin} />
       )}
-      <SharedVideoList />
+      <SharedVideoList refreshTrigger={refreshTrigger} />
     </div>
   );
 }
