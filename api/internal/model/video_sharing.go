@@ -13,3 +13,7 @@ type SharedVideo struct {
 	VideoTitle  string
 	SharerEmail string
 }
+
+type NewVideoMessage struct {
+	SharerEmail string `json:"email"`
+}

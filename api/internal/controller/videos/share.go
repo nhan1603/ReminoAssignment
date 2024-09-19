@@ -5,23 +5,20 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/iam"
 	"github.com/nhan1603/ReminoAssignment/api/internal/model"
 	"github.com/nhan1603/ReminoAssignment/api/internal/pkg/validator"
 	"github.com/nhan1603/ReminoAssignment/api/internal/repository/user"
 )
 
-func (i impl) ShareVideo(ctx context.Context, videoUrl, videoTitle string) error {
+func (i impl) ShareVideo(ctx context.Context, videoUrl, videoTitle, sharerEmail string) error {
 	// Check if video url is valid youtube url
 	if !validator.IsValidYouTubeURL(videoUrl) {
 		return ErrInvalidVideoUrl
 	}
 
-	userProfile := iam.UserProfileFromContext(ctx)
-
 	// Check if user email is valid user
 	shareUser, err := i.repo.User().GetByEmail(ctx, user.GetUserInput{
-		Email: userProfile.Email,
+		Email: sharerEmail,
 	})
 	if err != nil {
 		if errors.Is(err, user.ErrNotFound) {

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/httpserver"
+	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/iam"
 	"github.com/nhan1603/ReminoAssignment/api/internal/controller/videos"
 )
 
@@ -21,7 +22,11 @@ func (h Handler) ShareVideo() http.HandlerFunc {
 			return err
 		}
 
-		err := h.videoCtrl.ShareVideo(r.Context(), req.VideoUrl, req.VideoTitle)
+		ctx := r.Context()
+
+		userProfile := iam.UserProfileFromContext(ctx)
+
+		err := h.videoCtrl.ShareVideo(ctx, req.VideoUrl, req.VideoTitle, userProfile.Email)
 		if err != nil {
 			switch err {
 			case videos.ErrInvalidVideoUrl:
@@ -33,6 +38,8 @@ func (h Handler) ShareVideo() http.HandlerFunc {
 			}
 			return err
 		}
+
+		h.videoCtrl.Push(ctx, userProfile.Email)
 
 		w.WriteHeader(http.StatusOK)
 		return nil

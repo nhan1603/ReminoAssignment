@@ -47,6 +47,12 @@ func (rtr router) public(r chi.Router) {
 		})
 	})
 
+	// Websocket routing
+	r.Group(func(r chi.Router) {
+		videoH := publicVideoHandler.New(rtr.videoCtrl)
+		r.Get("/broadcast-ws", videoH.BroadCastResponse())
+	})
+
 	// v1
 	r.Group(func(r chi.Router) {
 		prefix = prefix + "/v1"

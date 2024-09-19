@@ -6,11 +6,13 @@ import (
 	"log"
 	"os"
 
+	"github.com/gorilla/websocket"
 	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/db/pg"
 	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/httpserver"
 	"github.com/nhan1603/ReminoAssignment/api/internal/appconfig/iam"
 	"github.com/nhan1603/ReminoAssignment/api/internal/controller/auth"
 	"github.com/nhan1603/ReminoAssignment/api/internal/controller/videos"
+	"github.com/nhan1603/ReminoAssignment/api/internal/model"
 	"github.com/nhan1603/ReminoAssignment/api/internal/repository"
 	"github.com/nhan1603/ReminoAssignment/api/internal/repository/generator"
 )
@@ -54,6 +56,6 @@ func initRouter(
 	return router{
 		ctx:       ctx,
 		authCtrl:  auth.New(repo, iam.ConfigFromContext(ctx)),
-		videoCtrl: videos.New(repo),
+		videoCtrl: videos.New(repo, make(map[*websocket.Conn]bool), make(chan model.NewVideoMessage)),
 	}, nil
 }
